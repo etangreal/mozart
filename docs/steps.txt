@@ -45,5 +45,10 @@
         
         - https://nx.dev/latest/react/guides/nextjs
 
+            > nx g @nrwl/next:app blog --dryRun
             > nx g @nrwl/next:app blog
-            >
+
+        - https://nx.dev/latest/angular/getting-started/console
+
+            > nx run blog:serve
+        
