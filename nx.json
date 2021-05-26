@@ -39,6 +39,9 @@
       "implicitDependencies": [
         "blog"
       ]
+    },
+    "infrastructure": {
+      "tags": []
     }
   }
 }
