@@ -1,4 +1,7 @@
 module.exports = {
+  testEnvironment: 'node',
+  roots: ['<rootDir>/test'],
+  testMatch: ['**/*.test.ts'],
   displayName: 'infrastructure',
   preset: '../../jest.preset.js',
   globals: {
