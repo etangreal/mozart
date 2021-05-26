@@ -51,4 +51,34 @@
         - https://nx.dev/latest/angular/getting-started/console
 
             > nx run blog:serve
+
+    Commandline-Utils:
+
+        - https://github.com/ohmyzsh/ohmyzsh
         
+    AWS CDK
+
+        - https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html#getting_started_install
+
+            > npm install -g aws-cdk
+
+            - https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html
+
+            ~ setup iam console user
+            ~ setup iam roles => attach that to the user
+
+                - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+                - https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
+            
+            > aws configure
+                ~ access-key-id
+                ~ secret-access
+                ~ region
+                ~ output format
+            > cd ~/.aws
+            > nano ./config
+
+
+    Git Branching model:
+
+        - https://trunkbaseddevelopment.com
