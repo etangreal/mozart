@@ -1,0 +1,84 @@
+
+    created a github repo mozart
+    
+    add an ssh key
+
+        https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+        https://docs.github.com/en/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account
+    
+    added branches
+
+        master
+        dev
+
+    Setup:
+
+        install nvm
+
+            https://github.com/nvm-sh/nvm
+
+        install yarn
+
+            npm install -g yarn
+
+        install nx
+
+            https://nx.dev/latest/angular/getting-started/cli-overview
+        
+            yarn global add nx
+
+        Nx tutorial
+
+            https://egghead.io/courses/scale-react-development-with-nx-4038
+
+    Setup-Nx:
+
+        npm i @nrwl/cli -g
+        npx create-nx-workspace mozart
+
+    Setup-NextJs-Blog:
+
+        - https://nx.dev/latest/react/guides/nextjs
+
+            > yarn add --dev @nrwl/next
+            > nx list
+        
+        - https://nx.dev/latest/react/guides/nextjs
+
+            > nx g @nrwl/next:app blog --dryRun
+            > nx g @nrwl/next:app blog
+
+        - https://nx.dev/latest/angular/getting-started/console
+
+            > nx run blog:serve
+
+    Commandline-Utils:
+
+        - https://github.com/ohmyzsh/ohmyzsh
+        
+    AWS CDK
+
+        - https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html#getting_started_install
+
+            > npm install -g aws-cdk
+
+            - https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html
+
+            ~ setup iam console user
+            ~ setup iam roles => attach that to the user
+
+                - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+                - https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
+            
+            > aws configure
+                ~ access-key-id
+                ~ secret-access
+                ~ region
+                ~ output format
+            > cd ~/.aws
+            > nano ./config
+
+
+    Git Branching model:
+
+        - https://trunkbaseddevelopment.com
