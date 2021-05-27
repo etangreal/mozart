@@ -1,10 +1,9 @@
-#!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { SrcStack } from '../lib/src-stack';
 
-const app = new cdk.App();
-new SrcStack(app, 'SrcStack', {
+const main = new cdk.App();
+new SrcStack(main, 'SrcStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
