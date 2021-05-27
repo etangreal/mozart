@@ -118,7 +118,7 @@
             "main": "apps/infrastructure/src/main.ts",
             "tsConfig": "apps/infrastructure/tsconfig.app.json",
             "assets": [
-              "apps/infrastructure/src/assets"
+
             ]
           },
           "configurations": {

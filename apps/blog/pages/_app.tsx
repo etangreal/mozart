@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppProps } from 'next/app';
+import { AppProps } from 'next/main';
 import Head from 'next/head';
 import { ReactComponent as NxLogo } from '../public/nx-logo-white.svg';
 import './styles.css';
@@ -10,7 +10,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Welcome to blog!</title>
       </Head>
-      <div className="app">
+      <div className="main">
         <header className="flex">
           <NxLogo width="75" height="50" />
           <h1>Welcome to blog!</h1>
