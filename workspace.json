@@ -118,7 +118,6 @@
             "main": "apps/infrastructure/src/main.ts",
             "tsConfig": "apps/infrastructure/tsconfig.app.json",
             "assets": [
-
             ]
           },
           "configurations": {
@@ -133,6 +132,16 @@
                 }
               ]
             }
+          }
+        },
+        "deploy": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "cdk -a dist/apps/infrastructure/main.js list"
+              }
+            ]
           }
         },
         "serve": {
