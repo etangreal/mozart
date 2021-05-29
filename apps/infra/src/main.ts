@@ -1,9 +1,9 @@
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { SrcStack } from '../lib/src-stack';
+import { StaticSiteStack } from '../lib/static-site-stack';
 
 const main = new cdk.App();
-new SrcStack(main, 'SrcStack', {
+new StaticSiteStack(main, 'SrcStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -14,7 +14,10 @@ new SrcStack(main, 'SrcStack', {
 
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+   env: { region: 'us-east-1' },
+    // Stack must be in us-east-1, because the ACM certificate for a
+    // global CloudFront distribution must be requested in us-east-1.
+
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });

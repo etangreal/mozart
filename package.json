@@ -27,7 +27,10 @@
   },
   "private": true,
   "dependencies": {
+    "@aws-cdk/aws-codepipeline": "^1.106.1",
+    "@aws-cdk/aws-codepipeline-actions": "^1.106.1",
     "@aws-cdk/core": "1.106.0",
+    "@aws-cdk/pipelines": "^1.106.1",
     "@nrwl/next": "12.3.5",
     "core-js": "^3.6.5",
     "document-register-element": "1.13.1",
