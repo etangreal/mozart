@@ -78,7 +78,14 @@
             > cd ~/.aws
             > nano ./config
 
+            > cdk bootstrap aws://account-number/us-east-1
 
     Git Branching model:
 
         - https://trunkbaseddevelopment.com
+
+    Nx AWS Project:
+
+        > yarn add --dev @nrwl/node
+        > yarn nx migrate latest
+        > nx g @nrwl/node:app infrastructure
