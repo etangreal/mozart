@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // import cloudfront = require('@aws-cdk/aws-cloudfront');
 // import route53 = require('@aws-cdk/aws-route53');
 import s3 = require('@aws-cdk/aws-s3');
