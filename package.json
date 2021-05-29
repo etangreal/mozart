@@ -29,7 +29,7 @@
   "dependencies": {
     "@aws-cdk/aws-codepipeline": "^1.106.1",
     "@aws-cdk/aws-codepipeline-actions": "^1.106.1",
-    "@aws-cdk/core": "1.106.0",
+    "@aws-cdk/core": "^1.106.1",
     "@aws-cdk/pipelines": "^1.106.1",
     "@nrwl/next": "12.3.5",
     "core-js": "^3.6.5",
@@ -44,7 +44,7 @@
     "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.106.0",
+    "@aws-cdk/assert": "^1.106.1",
     "@babel/core": "7.12.13",
     "@babel/preset-env": "7.12.13",
     "@babel/preset-react": "7.12.13",
@@ -70,7 +70,7 @@
     "@types/styled-components": "5.1.9",
     "@typescript-eslint/eslint-plugin": "4.19.0",
     "@typescript-eslint/parser": "4.19.0",
-    "aws-cdk": "1.106.0",
+    "aws-cdk": "^1.106.1",
     "babel-jest": "26.2.2",
     "babel-plugin-styled-components": "1.10.7",
     "cypress": "^6.0.1",

@@ -1,9 +1,9 @@
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { StaticSiteStack } from '../lib/static-site-stack';
+import { CdkpipelinesDemoPipelineStack } from '../lib/cdk-pipelines-demo-stack';
 
-const main = new cdk.App();
-new StaticSiteStack(main, 'SrcStack', {
+const app = new cdk.App();
+new CdkpipelinesDemoPipelineStack(app, 'BlogPipelineStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -21,3 +21,4 @@ new StaticSiteStack(main, 'SrcStack', {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+app.synth();
