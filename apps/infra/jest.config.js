@@ -2,7 +2,7 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/test'],
   testMatch: ['**/*.test.ts'],
-  displayName: 'infrastructure',
+  displayName: 'infra',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -13,5 +13,5 @@ module.exports = {
     '^.+\\.[tj]s$':  'ts-jest' 
   },
     moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/infrastructure'
+  coverageDirectory: '../../coverage/apps/infra'
 };

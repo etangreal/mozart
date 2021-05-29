@@ -31,6 +31,9 @@
     }
   },
   "projects": {
+    "infra": {
+      "tags": []
+    },
     "blog": {
       "tags": []
     },
@@ -39,9 +42,6 @@
       "implicitDependencies": [
         "blog"
       ]
-    },
-    "infrastructure": {
-      "tags": []
     }
   }
 }
