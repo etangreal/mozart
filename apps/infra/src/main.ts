@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { CdkpipelinesDemoPipelineStack } from '../lib/cdk-pipelines-demo-stack';
+import { CdkpipelinesDemoPipelineStack } from '../lib/cdk-pipelines-stack';
 
 const app = new cdk.App();
 new CdkpipelinesDemoPipelineStack(app, 'BlogPipelineStack', {

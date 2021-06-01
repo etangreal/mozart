@@ -22,13 +22,14 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             sourceAction: new codepipeline_actions.GitHubSourceAction({
                 actionName: 'GitHub',
                 output: sourceArtifact,
-                oauthToken: SecretValue.secretsManager('github-token'),
+                oauthToken: SecretValue.secretsManager('github-token', {jsonField :'github-token'}),
                 owner: 'etangreal',
                 repo: 'mozart',
             }),
 
             // How it will be built and synthesized
-            synthAction: SimpleSynthAction.standardNpmSynth({
+            synthAction: SimpleSynthAction.standardYarnSynth({
+
                 sourceArtifact,
                 cloudAssemblyArtifact,
 
