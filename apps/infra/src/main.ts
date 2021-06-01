@@ -1,6 +1,8 @@
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { CdkpipelinesDemoPipelineStack } from '../lib/cdk-pipelines-stack';
+import {StaticSite} from "../lib/static-site";
+import {StaticSiteStack} from "../lib/static-site-stack";
 
 const app = new cdk.App();
 new CdkpipelinesDemoPipelineStack(app, 'BlogPipelineStack', {
@@ -21,4 +23,5 @@ new CdkpipelinesDemoPipelineStack(app, 'BlogPipelineStack', {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+new StaticSiteStack(app, 'BlogStaticSite', {});
 app.synth();
