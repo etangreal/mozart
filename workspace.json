@@ -18,6 +18,72 @@
     }
   },
   "projects": {
+    "infra": {
+      "root": "apps/infra",
+      "sourceRoot": "apps/infra/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/infra",
+            "main": "apps/infra/src/main.ts",
+            "tsConfig": "apps/infra/tsconfig.app.json",
+            "assets": []
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/infra/src/environments/environment.ts",
+                  "with": "apps/infra/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "deploy": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "cdk -a dist/apps/infra/main.js list"
+              }
+            ]
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "infra:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/infra/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/infra"
+          ],
+          "options": {
+            "jestConfig": "apps/infra/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "blog": {
       "root": "apps/blog",
       "sourceRoot": "apps/blog",

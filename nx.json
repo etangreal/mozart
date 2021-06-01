@@ -31,6 +31,9 @@
     }
   },
   "projects": {
+    "infra": {
+      "tags": []
+    },
     "blog": {
       "tags": []
     },
