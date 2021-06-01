@@ -89,3 +89,23 @@
         > yarn add --dev @nrwl/node
         > yarn nx migrate latest
         > nx g @nrwl/node:app infrastructure
+
+    AWS-CDK:
+
+        - https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications
+
+        # Static Site Example
+        - https://github.com/aws-samples/aws-cdk-examples/blob/master/typescript/static-site/static-site.ts
+
+        # GitHub personal access token
+        - https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+
+            => settings => developer settings => personal access token => Generate new token
+
+        - https://aws.amazon.com/secrets-manager
+
+            - https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/managing-user-account-settings/permission-levels-for-a-user-account-repository
+    
+        # CDK Concepts
+        - https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html
+    

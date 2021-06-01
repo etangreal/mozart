@@ -1,0 +1,2 @@
+
+    - https://blog.innomizetech.com/2019/11/19/build-aws-serverless-application-with-nx-monorepo

@@ -1,0 +1,10 @@
+
+    GIT:
+
+        ~ gitKraken
+        ~ git fork
+        ~ git up
+
+    PASSWORD-MANAGEMENT:
+
+        ~ KeePassXC
