@@ -72,12 +72,6 @@
             ]
           }
         },
-        "serve": {
-          "executor": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "infra:build"
-          }
-        },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
