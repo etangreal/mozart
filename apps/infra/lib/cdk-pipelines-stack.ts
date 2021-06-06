@@ -37,8 +37,11 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                     'yarn install --frozen-lockfile'
                 ].join(' && '),
                 // We need a build step to compile the TypeScript Lambda
-                buildCommand: 'nx run blog:build',
-                synthCommand: ''
+                buildCommand: [
+                    'nx run blog:build',
+                    'nx run infra:build'
+                ].join(' && '),
+                synthCommand: 'cdk synth -a dist/apps/infra/main.js'
             }),
         });
 
