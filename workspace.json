@@ -20,7 +20,7 @@
   "projects": {
     "infra": {
       "root": "apps/infra",
-      "sourceRoot": "apps/infra/src",
+      "sourceRoot": "apps/infra",
       "projectType": "application",
       "targets": {
         "build": {
@@ -32,7 +32,9 @@
             "outputPath": "dist/apps/infra",
             "main": "apps/infra/src/main.ts",
             "tsConfig": "apps/infra/tsconfig.app.json",
-            "assets": []
+            "assets": [
+              "apps/infra/cdk.json"
+            ]
           },
           "configurations": {
             "production": {
@@ -51,9 +53,21 @@
         "deploy": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
+            "cwd": "dist/apps/infra",
             "commands": [
               {
-                "command": "cdk -a dist/apps/infra/main.js list"
+                "command": "cdk deploy -a main.js"
+              }
+            ]
+          }
+        },
+        "synth": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "cwd": "dist/apps/infra",
+            "commands": [
+              {
+                "command": "cdk synth -a main.js -o ../../../cdk.out"
               }
             ]
           }
