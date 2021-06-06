@@ -20,8 +20,6 @@ new CdkpipelinesDemoPipelineStack(app, 'BlogPipelineStack', {
     // Stack must be in us-east-1, because the ACM certificate for a
     // global CloudFront distribution must be requested in us-east-1.
 
-
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
-new StaticSiteStack(app, 'BlogStaticSite', {});
 app.synth();
