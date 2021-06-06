@@ -33,14 +33,14 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                 sourceArtifact,
                 cloudAssemblyArtifact,
                 installCommand: [
-                    'npm install -g nx',
+                   // 'npm install -g nx',
                     'yarn install --frozen-lockfile'
                 ].join(' && '),
                 // We need a build step to compile the TypeScript Lambda
                 buildCommand: [
-                    'nx run infra:build'
+                    'npx nx run infra:build'
                 ].join(' && '),
-                synthCommand: 'cdk synth -a dist/apps/infra/main.js'
+                synthCommand: 'npx cdk synth -a dist/apps/infra/main.js'
             }),
         });
 
