@@ -12,9 +12,9 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
-        const sourceArtifact = new codepipeline.Artifact('source-artifact');
-        const cloudAssemblyArtifact = new codepipeline.Artifact('cloud-assembly-artifact');
-        const blogArtifact = new codepipeline.Artifact('blog-artifact');
+        const sourceArtifact = new codepipeline.Artifact('source_artifact');
+        const cloudAssemblyArtifact = new codepipeline.Artifact('cloud_assembly_artifact');
+        const blogArtifact = new codepipeline.Artifact('blog_artifact');
 
         const pipeline = new CdkPipeline(this, 'Pipeline', {
             // The pipeline name
