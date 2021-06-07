@@ -1,2 +1,4 @@
 
     - https://blog.innomizetech.com/2019/11/19/build-aws-serverless-application-with-nx-monorepo
+    - https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/
+    - https://aws.plainenglish.io/cdk-pipelines-beyond-basics-37b731b7a182
