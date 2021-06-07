@@ -14,6 +14,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
 
         const sourceArtifact = new codepipeline.Artifact();
         const cloudAssemblyArtifact = new codepipeline.Artifact();
+        const blogArtifact = new codepipeline.Artifact('blog-artifact');
 
         const pipeline = new CdkPipeline(this, 'Pipeline', {
             // The pipeline name
@@ -33,15 +34,22 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             synthAction: SimpleSynthAction.standardYarnSynth({
                 sourceArtifact,
                 cloudAssemblyArtifact,
+                additionalArtifacts: [
+                    {
+                        artifact: blogArtifact,
+                        directory : 'dist/apps/blog/exported'
+                    }
+                ],
                 installCommand: [
                     'yarn install --frozen-lockfile'
                 ].join(' && '),
                 // We need a build step to compile the TypeScript CDK
                 buildCommand: [
                     'npx nx run infra:build',
+                    'npx nx run blog:export',
                 ].join(' && '),
                 synthCommand: 'npx nx run infra:synth'
-            }),
+            })
         });
 
         // This is where we add the application stages
