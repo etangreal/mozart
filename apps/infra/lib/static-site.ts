@@ -1,11 +1,12 @@
 // import cloudfront = require('@aws-cdk/aws-cloudfront');
 // import route53 = require('@aws-cdk/aws-route53');
 import s3 = require('@aws-cdk/aws-s3');
-// import s3deploy = require('@aws-cdk/aws-s3-deployment');
+import s3deploy = require('@aws-cdk/aws-s3-deployment');
 // import acm = require('@aws-cdk/aws-certificatemanager');
 import cdk = require('@aws-cdk/core');
 // import targets = require('@aws-cdk/aws-route53-targets/lib');
-import { Construct } from '@aws-cdk/core';
+import {Construct} from '@aws-cdk/core';
+import {ISource} from "@aws-cdk/aws-s3-deployment/lib/source";
 
 export interface StaticSiteProps {
     domainName: string;
@@ -75,11 +76,11 @@ export class StaticSite extends Construct {
         //     zone
         // });
 
-        // Deploy site contents to S3 bucket
+        //Deploy site contents to S3 bucket
         // new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
-        //     sources: [ s3deploy.Source.asset('./site-contents') ],
+        //     sources: [ s3deploy.Source.bucket() ],
         //     destinationBucket: siteBucket,
-        //     distribution,
+        //     //distribution,
         //     distributionPaths: ['/*'],
         // });
     }

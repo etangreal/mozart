@@ -4,7 +4,7 @@ import { StaticSiteStack } from './static-site-stack';
 /**
  * Deployable unit of web service app
  */
-export class CdkpipelinesDemoStage extends Stage {
+export class StaticSiteInfrastructureStage extends Stage {
     // public readonly urlOutput: CfnOutput;
 
     constructor(scope: Construct, id: string, props?: StageProps) {
