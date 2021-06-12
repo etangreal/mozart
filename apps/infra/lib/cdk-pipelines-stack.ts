@@ -1,9 +1,11 @@
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
-import {Artifact} from '@aws-cdk/aws-codepipeline';
 import * as cp from '@aws-cdk/aws-codepipeline';
+import {Artifact} from '@aws-cdk/aws-codepipeline';
+import * as cb from '@aws-cdk/aws-codebuild';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
+import {CodeBuildAction} from '@aws-cdk/aws-codepipeline-actions';
 import {Construct, SecretValue, Stack, StackProps} from '@aws-cdk/core';
-import {CdkPipeline, SimpleSynthAction} from "@aws-cdk/pipelines";
+import {CdkPipeline} from "@aws-cdk/pipelines";
 import {StaticSiteInfrastructureStage} from "./static-site-infrastructure-stage";
 
 /**
@@ -22,7 +24,6 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
     }
 
     private getCdkPipeline(sourceArtifact: Artifact) {
-        const cloudAssemblyArtifact = new codepipeline.Artifact('assembly');
         const sourceAction = new codepipeline_actions.GitHubSourceAction({
             actionName: 'GitHub',
             output: sourceArtifact,
@@ -31,19 +32,12 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             repo: 'mozart',
         });
 
-        const cdkSynthAction = SimpleSynthAction.standardYarnSynth({
-            sourceArtifact,
-            cloudAssemblyArtifact,
-            installCommand: 'yarn install --frozen-lockfile',
-            // We need a build step to compile the TypeScript CDK
-            buildCommand: 'npx nx run infra:build',
-            synthCommand: 'npx nx run infra:synth'
-        });
+        const build = this.getBuildAction(sourceArtifact);
 
         const codePipeline = new cp.Pipeline(this, 'CodePipeline', {
             pipelineName: 'BlogPipeline',
             crossAccountKeys: false, // https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html#a-note-on-cost
-            restartExecutionOnUpdate: false,
+            restartExecutionOnUpdate: true,
             stages: [
                 {
                     stageName: 'SourceAction',
@@ -51,16 +45,52 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                 },
                 {
                     stageName: 'BuildAction',
-                    actions: [cdkSynthAction],
+                    actions: [build.buildAction],
                 }
             ],
         });
 
         const cdkPipeline = new CdkPipeline(this, 'Pipeline', {
             codePipeline,
-            cloudAssemblyArtifact,
+            cloudAssemblyArtifact: build.outCloudAssemblyArtifact,
             selfMutating: false});
 
         return cdkPipeline;
+    }
+
+    private getBuildAction(inSourceArtifact: Artifact) :{
+        buildAction: cp.Action;
+        outCloudAssemblyArtifact: Artifact;
+    } {
+        const pipelineBuildProject = new cb.PipelineProject(this, 'BuildProject', {
+            buildSpec: cb.BuildSpec.fromObject({
+                version: "0.2",
+                phases: {
+                    install: {
+                        commands: ["yarn install --frozen-lockfile"],
+                    },
+                    build: {
+                        commands: ["npx cdk synth ApiStack"],
+                    },
+                },
+                artifacts: {
+                    // store the entire Cloud Assembly as the output artifact
+                    "base-directory": "cdk.out",
+                    files: "**/*",
+                },
+            })
+        });
+
+        const cloudAssemblyArtifact = new codepipeline.Artifact('assembly');
+
+        const buildAction = new CodeBuildAction({
+            actionName: 'Build',
+            project: pipelineBuildProject,
+            input: inSourceArtifact,
+            outputs: [cloudAssemblyArtifact],
+            runOrder: 1
+        });
+
+        return {buildAction, outCloudAssemblyArtifact: cloudAssemblyArtifact};
     }
 }
