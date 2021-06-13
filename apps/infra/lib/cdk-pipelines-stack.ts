@@ -63,6 +63,9 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         outCloudAssemblyArtifact: Artifact;
     } {
         const pipelineBuildProject = new cb.PipelineProject(this, 'BuildProject', {
+            environment: {
+              buildImage: cb.LinuxBuildImage.STANDARD_5_0
+            },
             buildSpec: cb.BuildSpec.fromObject({
                 version: "0.2",
                 phases: {

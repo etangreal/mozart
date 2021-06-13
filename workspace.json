@@ -53,10 +53,10 @@
         "deploy": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "cwd": "dist/apps/infra",
+            "cwd": "apps/infra",
             "commands": [
               {
-                "command": "cdk deploy -a main.js"
+                "command": "cdk deploy"
               }
             ]
           }
