@@ -8,6 +8,7 @@ import {Construct, SecretValue, Stack, StackProps} from '@aws-cdk/core';
 import {CdkPipeline} from "@aws-cdk/pipelines";
 import {StaticSiteInfrastructureStage} from "./static-site-infrastructure-stage";
 import * as s3 from "@aws-cdk/aws-s3";
+import * as iam from "@aws-cdk/aws-iam";
 
 
 interface BuildAction {
@@ -46,6 +47,13 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             selfMutating: false // This creates the self mutating UpdatePipeline stage
         });
 
+        cdkPipeline.codePipeline.addToRolePolicy(
+            new iam.PolicyStatement({
+                actions: ["route53:ListHostedZonesByName"],
+                resources: ["*"]
+            })
+        );
+
         const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction', {
             env: {
                 region: this.region,
@@ -55,6 +63,8 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
 
         // This is where we add the application stages
         cdkPipeline.addApplicationStage(preProdStage);
+
+
 
         const deployStaticStage = cdkPipeline.addStage('DeployPreProdContents');
         deployStaticStage.addActions(this.deployAction(buildActionParameters.outBlogArtifact, deployStaticStage.nextSequentialRunOrder()))
