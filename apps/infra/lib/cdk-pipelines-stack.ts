@@ -53,7 +53,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         const cdkPipeline = new CdkPipeline(this, 'Pipeline', {
             codePipeline,
             cloudAssemblyArtifact: build.outCloudAssemblyArtifact,
-            selfMutating: false});
+            selfMutating: true});
 
         return cdkPipeline;
     }
