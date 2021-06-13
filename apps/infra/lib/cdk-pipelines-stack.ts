@@ -46,7 +46,12 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             selfMutating: false // This creates the self mutating UpdatePipeline stage
         });
 
-        const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction');
+        const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction', {
+            env: {
+                region: this.region,
+                account: this.account
+            }
+        });
 
         // This is where we add the application stages
         cdkPipeline.addApplicationStage(preProdStage);

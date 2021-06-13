@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import s3 = require('@aws-cdk/aws-s3');
+import route53 = require('@aws-cdk/aws-route53');
 
 export class StaticSiteStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -8,7 +9,7 @@ export class StaticSiteStack extends cdk.Stack {
     const domainName = this.node.tryGetContext('domain');
     const siteSubDomain = this.node.tryGetContext('subdomain');
 
-    // const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.domainName });
+    const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: domainName });
     const siteDomain = siteSubDomain + '.' + domainName;
     // new cdk.CfnOutput(this, 'Site', { value: 'https://' + siteDomain });
 
@@ -60,14 +61,11 @@ export class StaticSiteStack extends cdk.Stack {
     //     target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
     //     zone
     // });
-
-    //Deploy site contents to S3 bucket
-    // new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
-    //     sources: [ props.blogSource ],
-    //     destinationBucket: siteBucket,
-    //     //distribution,
-    //     // distributionPaths: ['/*'],
-    // });
+    const cName = new route53.CnameRecord(this, 'SiteCnameRecord', {
+      zone: zone,
+      recordName: 'blog',
+      domainName: siteDomain
+    });
   }
 }
 

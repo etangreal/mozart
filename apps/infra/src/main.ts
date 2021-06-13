@@ -20,7 +20,7 @@ new CdkpipelinesDemoPipelineStack(app, 'BlogPipelineStack', {
 
     /* Uncomment the next line if you know exactly what Account and Region you
      * want to deploy the stack to. */
-    env: {region: 'us-east-1'},
+    env: {region: 'us-east-1', account: '090470473446'},
     // Stack must be in us-east-1, because the ACM certificate for a
     // global CloudFront distribution must be requested in us-east-1.
 
