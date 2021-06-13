@@ -47,13 +47,6 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             selfMutating: false // This creates the self mutating UpdatePipeline stage
         });
 
-        cdkPipeline.codePipeline.addToRolePolicy(
-            new iam.PolicyStatement({
-                actions: ["route53:ListHostedZonesByName"],
-                resources: ["*"]
-            })
-        );
-
         const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction', {
             env: {
                 region: this.region,
@@ -158,6 +151,11 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                 }
             })
         });
+
+        pipelineBuildProject.addToRolePolicy(  new iam.PolicyStatement({
+            actions: ["route53:ListHostedZonesByName"],
+            resources: ["*"]
+        }));
 
         const cloudAssemblyArtifact = new codepipeline.Artifact('assembly');
         const blogArtifact = new codepipeline.Artifact('blog');
