@@ -3,7 +3,7 @@ import * as cp from '@aws-cdk/aws-codepipeline';
 import {Artifact} from '@aws-cdk/aws-codepipeline';
 import * as cb from '@aws-cdk/aws-codebuild';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
-import {CodeBuildAction, S3DeployAction} from '@aws-cdk/aws-codepipeline-actions';
+import {CodeBuildAction, GitHubSourceAction, S3DeployAction} from '@aws-cdk/aws-codepipeline-actions';
 import {Construct, SecretValue, Stack, StackProps} from '@aws-cdk/core';
 import {CdkPipeline} from "@aws-cdk/pipelines";
 import {StaticSiteInfrastructureStage} from "./static-site-infrastructure-stage";
@@ -34,6 +34,30 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
     }
 
     private getCdkPipeline(sourceArtifact: Artifact): BuildPipeLine {
+        const sourceAction = this.getSourceAction(sourceArtifact);
+
+        const buildActionParameters = this.getBuildStageParameters(sourceArtifact);
+
+        const codePipeline = this.getCodePipeline(sourceAction, buildActionParameters);
+
+        const cdkPipeline = new CdkPipeline(this, 'Pipeline', {
+            codePipeline,
+            cloudAssemblyArtifact: buildActionParameters.outCloudAssemblyArtifact,
+            selfMutating: false // This creates the self mutating UpdatePipeline stage
+        });
+
+        const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction');
+
+        // This is where we add the application stages
+        cdkPipeline.addApplicationStage(preProdStage);
+
+        const deployStaticStage = cdkPipeline.addStage('DeployPreProdContents');
+        deployStaticStage.addActions(this.deployAction(buildActionParameters.outBlogArtifact, deployStaticStage.nextSequentialRunOrder()))
+
+        return {buildActionOut: buildActionParameters, pipeline: cdkPipeline};
+    }
+
+    private getSourceAction(sourceArtifact: Artifact) {
         const sourceAction = new codepipeline_actions.GitHubSourceAction({
             actionName: 'GitHub',
             output: sourceArtifact,
@@ -41,10 +65,11 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             owner: 'etangreal',
             repo: 'mozart',
         });
+        return sourceAction;
+    }
 
-        const build = this.getBuildStageParameters(sourceArtifact);
-
-        const codePipeline = new cp.Pipeline(this, 'CodePipeline', {
+    private getCodePipeline(sourceAction: GitHubSourceAction, build: BuildAction) {
+        return new cp.Pipeline(this, 'CodePipeline', {
             pipelineName: 'BlogPipeline',
             crossAccountKeys: false, // https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html#a-note-on-cost
             restartExecutionOnUpdate: true,
@@ -59,22 +84,6 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                 }
             ],
         });
-
-        const cdkPipeline = new CdkPipeline(this, 'Pipeline', {
-            codePipeline,
-            cloudAssemblyArtifact: build.outCloudAssemblyArtifact,
-            selfMutating: false // This creates the self mutating UpdatePipeline stage
-        });
-
-        const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction');
-
-        // This is where we add the application stages
-        cdkPipeline.addApplicationStage(preProdStage);
-
-        const deployStaticStage = cdkPipeline.addStage('DeployPreProdContents');
-        deployStaticStage.addActions(this.deployAction(build.outBlogArtifact, deployStaticStage.nextSequentialRunOrder()))
-
-        return {buildActionOut: build, pipeline: cdkPipeline};
     }
 
     private deployAction(
