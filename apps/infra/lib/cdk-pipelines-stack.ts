@@ -59,13 +59,13 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         return cdkPipeline;
     }
 
-    private getBuildStage(inSourceArtifact: Artifact) :{
+    private getBuildStage(inSourceArtifact: Artifact): {
         buildAction: cp.Action;
         outCloudAssemblyArtifact: Artifact;
     } {
         const pipelineBuildProject = new cb.PipelineProject(this, 'BuildProject', {
             environment: {
-              buildImage: cb.LinuxBuildImage.STANDARD_5_0
+                buildImage: cb.LinuxBuildImage.STANDARD_5_0
             },
             buildSpec: cb.BuildSpec.fromObject({
                 version: "0.2",
@@ -81,9 +81,16 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                     },
                 },
                 artifacts: {
-                    // store the entire Cloud Assembly as the output artifact
-                    "base-directory": "cdk.out",
-                    files: "**/*",
+                    "secondary-artifacts": {
+                        assembly : {
+                            "base-directory": "cdk.out",
+                            files: "**/*",
+                        },
+                        blog : {
+                            "base-directory": "dist/apps/blog/exported",
+                            files: "**/*",
+                        }
+                    },
                 },
                 cache: {
                     paths: [
@@ -95,12 +102,13 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         });
 
         const cloudAssemblyArtifact = new codepipeline.Artifact('assembly');
+        const blogArtifact = new codepipeline.Artifact('blog');
 
         const buildAction = new CodeBuildAction({
             actionName: 'Build',
             project: pipelineBuildProject,
             input: inSourceArtifact,
-            outputs: [cloudAssemblyArtifact],
+            outputs: [cloudAssemblyArtifact, blogArtifact],
             runOrder: 1
         });
 
