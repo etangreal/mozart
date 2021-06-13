@@ -77,7 +77,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                         commands: [
                             "npx nx run infra:build",
                             "npx nx run infra:synth",
-                            "npx nx run blog:build",
+                            "npx nx run blog:export",
                         ],
                     },
                 },
