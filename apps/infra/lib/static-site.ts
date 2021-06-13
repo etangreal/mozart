@@ -1,13 +1,10 @@
 // import cloudfront = require('@aws-cdk/aws-cloudfront');
 // import route53 = require('@aws-cdk/aws-route53');
 import s3 = require('@aws-cdk/aws-s3');
-import s3deploy = require('@aws-cdk/aws-s3-deployment');
 // import acm = require('@aws-cdk/aws-certificatemanager');
 import cdk = require('@aws-cdk/core');
 // import targets = require('@aws-cdk/aws-route53-targets/lib');
 import {Construct} from '@aws-cdk/core';
-import {ISource} from "@aws-cdk/aws-s3-deployment/lib/source";
-import {BlogSource} from "./blog-source";
 
 export interface StaticSiteProps {
     domainName: string;
@@ -21,7 +18,7 @@ export interface StaticSiteProps {
  * Route53 alias record, and ACM certificate.
  */
 export class StaticSite extends Construct {
-    constructor(parent: Construct, name: string, props: StaticSiteProps & BlogSource) {
+    constructor(parent: Construct, name: string, props: StaticSiteProps) {
         super(parent, name);
 
         // const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.domainName });
@@ -78,11 +75,11 @@ export class StaticSite extends Construct {
         // });
 
         //Deploy site contents to S3 bucket
-        new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
-            sources: [ props.blogSource ],
-            destinationBucket: siteBucket,
-            //distribution,
-            // distributionPaths: ['/*'],
-        });
+        // new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
+        //     sources: [ props.blogSource ],
+        //     destinationBucket: siteBucket,
+        //     //distribution,
+        //     // distributionPaths: ['/*'],
+        // });
     }
 }

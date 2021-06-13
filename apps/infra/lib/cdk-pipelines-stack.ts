@@ -3,11 +3,10 @@ import * as cp from '@aws-cdk/aws-codepipeline';
 import {Artifact} from '@aws-cdk/aws-codepipeline';
 import * as cb from '@aws-cdk/aws-codebuild';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
-import {CodeBuildAction} from '@aws-cdk/aws-codepipeline-actions';
+import {CodeBuildAction, S3DeployAction} from '@aws-cdk/aws-codepipeline-actions';
 import {Construct, SecretValue, Stack, StackProps} from '@aws-cdk/core';
 import {CdkPipeline} from "@aws-cdk/pipelines";
 import {StaticSiteInfrastructureStage} from "./static-site-infrastructure-stage";
-import {Source} from "@aws-cdk/aws-s3-deployment/lib/source";
 import * as s3 from "@aws-cdk/aws-s3";
 
 
@@ -32,14 +31,6 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         const sourceArtifact = new codepipeline.Artifact('source');
 
         const buildPipeLine = this.getCdkPipeline(sourceArtifact);
-        const blogArtifact = buildPipeLine.buildActionOut.outBlogArtifact;
-
-       const staticSiteStage = new StaticSiteInfrastructureStage(this, 'SiteInfrastructure', {
-            blogSource: Source.bucket(s3.Bucket.fromBucketName(this,'sourceBucketName', blogArtifact.bucketName), blogArtifact.artifactName!)
-        });
-
-        // This is where we add the application stages
-        buildPipeLine.pipeline.addApplicationStage(staticSiteStage);
     }
 
     private getCdkPipeline(sourceArtifact: Artifact): BuildPipeLine {
@@ -51,7 +42,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             repo: 'mozart',
         });
 
-        const build = this.getBuildStage(sourceArtifact);
+        const build = this.getBuildStageParameters(sourceArtifact);
 
         const codePipeline = new cp.Pipeline(this, 'CodePipeline', {
             pipelineName: 'BlogPipeline',
@@ -75,10 +66,34 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             selfMutating: false // This creates the self mutating UpdatePipeline stage
         });
 
+        const staticSiteStage = new StaticSiteInfrastructureStage(this, 'SiteInfrastructure');
+
+        // This is where we add the application stages
+        cdkPipeline.addApplicationStage(staticSiteStage);
+
+        const bucketName = this.node.tryGetContext('domain')
+        const deployStaticStage = cdkPipeline.addStage('DeploySiteContents');
+        deployStaticStage.addActions(this.deployAction(build.outBlogArtifact, bucketName, deployStaticStage.nextSequentialRunOrder()))
+
         return {buildActionOut: build, pipeline: cdkPipeline};
     }
 
-    private getBuildStage(inSourceArtifact: Artifact): BuildAction {
+    private deployAction(
+        buildArtifact: cp.Artifact,
+        bucketName: string,
+        runOrder: number
+    ): S3DeployAction {
+        const bucket = s3.Bucket.fromBucketName(this, "WebsiteBucket", bucketName);
+
+        return new S3DeployAction({
+            actionName: "Deploy",
+            runOrder: runOrder,
+            input: buildArtifact,
+            bucket: bucket,
+        });
+    }
+
+    private getBuildStageParameters(inSourceArtifact: Artifact): BuildAction {
         const pipelineBuildProject = new cb.PipelineProject(this, 'BuildProject', {
             environment: {
                 buildImage: cb.LinuxBuildImage.STANDARD_5_0
@@ -99,11 +114,11 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                 },
                 artifacts: {
                     "secondary-artifacts": {
-                        assembly : {
+                        assembly: {
                             "base-directory": "cdk.out",
                             files: "**/*",
                         },
-                        blog : {
+                        blog: {
                             "base-directory": "dist/apps/blog/exported",
                             files: "**/*",
                         }
