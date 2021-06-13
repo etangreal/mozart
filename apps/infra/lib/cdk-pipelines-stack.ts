@@ -71,21 +71,21 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         // This is where we add the application stages
         cdkPipeline.addApplicationStage(preProdStage);
 
-        const domainName = this.node.tryGetContext('domain');
-        const siteSubDomain = this.node.tryGetContext('subdomain');
-        const siteDomain = siteSubDomain + '.' + domainName;
-        const deployStaticStage = cdkPipeline.addStage('DeploySiteContents');
-        deployStaticStage.addActions(this.deployAction(build.outBlogArtifact, siteDomain, deployStaticStage.nextSequentialRunOrder()))
+        const deployStaticStage = cdkPipeline.addStage('DeployPreProdContents');
+        deployStaticStage.addActions(this.deployAction(build.outBlogArtifact, deployStaticStage.nextSequentialRunOrder()))
 
         return {buildActionOut: build, pipeline: cdkPipeline};
     }
 
     private deployAction(
         buildArtifact: cp.Artifact,
-        bucketName: string,
         runOrder: number
     ): S3DeployAction {
-        const bucket = s3.Bucket.fromBucketName(this, "WebsiteBucket", bucketName);
+        const domainName = this.node.tryGetContext('domain');
+        const siteSubDomain = this.node.tryGetContext('subdomain');
+        const siteDomain = siteSubDomain + '.' + domainName;
+
+        const bucket = s3.Bucket.fromBucketName(this, "WebsiteBucket", siteDomain);
 
         return new S3DeployAction({
             actionName: "Deploy",
