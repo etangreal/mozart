@@ -7,6 +7,7 @@ import cdk = require('@aws-cdk/core');
 // import targets = require('@aws-cdk/aws-route53-targets/lib');
 import {Construct} from '@aws-cdk/core';
 import {ISource} from "@aws-cdk/aws-s3-deployment/lib/source";
+import {BlogSource} from "./blog-source";
 
 export interface StaticSiteProps {
     domainName: string;
@@ -20,7 +21,7 @@ export interface StaticSiteProps {
  * Route53 alias record, and ACM certificate.
  */
 export class StaticSite extends Construct {
-    constructor(parent: Construct, name: string, props: StaticSiteProps) {
+    constructor(parent: Construct, name: string, props: StaticSiteProps & BlogSource) {
         super(parent, name);
 
         // const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.domainName });
@@ -77,11 +78,11 @@ export class StaticSite extends Construct {
         // });
 
         //Deploy site contents to S3 bucket
-        // new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
-        //     sources: [ s3deploy.Source.bucket() ],
-        //     destinationBucket: siteBucket,
-        //     //distribution,
-        //     distributionPaths: ['/*'],
-        // });
+        new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
+            sources: [ props.blogSource ],
+            destinationBucket: siteBucket,
+            //distribution,
+            // distributionPaths: ['/*'],
+        });
     }
 }

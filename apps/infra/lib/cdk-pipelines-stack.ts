@@ -7,6 +7,20 @@ import {CodeBuildAction} from '@aws-cdk/aws-codepipeline-actions';
 import {Construct, SecretValue, Stack, StackProps} from '@aws-cdk/core';
 import {CdkPipeline} from "@aws-cdk/pipelines";
 import {StaticSiteInfrastructureStage} from "./static-site-infrastructure-stage";
+import {Source} from "@aws-cdk/aws-s3-deployment/lib/source";
+import * as s3 from "@aws-cdk/aws-s3";
+
+
+interface BuildAction {
+    buildAction: cp.Action;
+    outCloudAssemblyArtifact: Artifact;
+    outBlogArtifact: Artifact;
+}
+
+interface BuildPipeLine {
+    buildActionOut: BuildAction;
+    pipeline: CdkPipeline
+}
 
 /**
  * The stack that defines the application pipeline
@@ -17,13 +31,18 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
 
         const sourceArtifact = new codepipeline.Artifact('source');
 
-        const pipeline = this.getCdkPipeline(sourceArtifact);
+        const buildPipeLine = this.getCdkPipeline(sourceArtifact);
+        const blogArtifact = buildPipeLine.buildActionOut.outBlogArtifact;
+
+       const staticSiteStage = new StaticSiteInfrastructureStage(this, 'SiteInfrastructure', {
+            blogSource: Source.bucket(s3.Bucket.fromBucketName(this,'sourceBucketName', blogArtifact.bucketName), blogArtifact.artifactName!)
+        });
 
         // This is where we add the application stages
-        pipeline.addApplicationStage(new StaticSiteInfrastructureStage(this, 'SiteInfrastructure'));
+        buildPipeLine.pipeline.addApplicationStage(staticSiteStage);
     }
 
-    private getCdkPipeline(sourceArtifact: Artifact) {
+    private getCdkPipeline(sourceArtifact: Artifact): BuildPipeLine {
         const sourceAction = new codepipeline_actions.GitHubSourceAction({
             actionName: 'GitHub',
             output: sourceArtifact,
@@ -56,13 +75,10 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             selfMutating: false // This creates the self mutating UpdatePipeline stage
         });
 
-        return cdkPipeline;
+        return {buildActionOut: build, pipeline: cdkPipeline};
     }
 
-    private getBuildStage(inSourceArtifact: Artifact): {
-        buildAction: cp.Action;
-        outCloudAssemblyArtifact: Artifact;
-    } {
+    private getBuildStage(inSourceArtifact: Artifact): BuildAction {
         const pipelineBuildProject = new cb.PipelineProject(this, 'BuildProject', {
             environment: {
                 buildImage: cb.LinuxBuildImage.STANDARD_5_0
@@ -113,6 +129,6 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             runOrder: 1
         });
 
-        return {buildAction, outCloudAssemblyArtifact: cloudAssemblyArtifact};
+        return {buildAction, outCloudAssemblyArtifact: cloudAssemblyArtifact, outBlogArtifact: blogArtifact};
     }
 }
