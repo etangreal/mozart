@@ -70,7 +70,10 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                         commands: ["yarn install --frozen-lockfile"],
                     },
                     build: {
-                        commands: ["npx cdk synth ApiStack"],
+                        commands: [
+                            "npx nx run infra:build",
+                            "npx nx run infra:synth",
+                        ],
                     },
                 },
                 artifacts: {
@@ -78,6 +81,12 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
                     "base-directory": "cdk.out",
                     files: "**/*",
                 },
+                cache: {
+                    paths: [
+                        '/root/.yarn-cache/**/*',
+                        'node_modules/**/*'
+                    ]
+                }
             })
         });
 
