@@ -66,14 +66,16 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             selfMutating: false // This creates the self mutating UpdatePipeline stage
         });
 
-        const staticSiteStage = new StaticSiteInfrastructureStage(this, 'SiteInfrastructure');
+        const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction');
 
         // This is where we add the application stages
-        cdkPipeline.addApplicationStage(staticSiteStage);
+        cdkPipeline.addApplicationStage(preProdStage);
 
-        const bucketName = this.node.tryGetContext('domain')
+        const domainName = this.node.tryGetContext('domain');
+        const siteSubDomain = this.node.tryGetContext('subdomain');
+        const siteDomain = siteSubDomain + '.' + domainName;
         const deployStaticStage = cdkPipeline.addStage('DeploySiteContents');
-        deployStaticStage.addActions(this.deployAction(build.outBlogArtifact, bucketName, deployStaticStage.nextSequentialRunOrder()))
+        deployStaticStage.addActions(this.deployAction(build.outBlogArtifact, siteDomain, deployStaticStage.nextSequentialRunOrder()))
 
         return {buildActionOut: build, pipeline: cdkPipeline};
     }
