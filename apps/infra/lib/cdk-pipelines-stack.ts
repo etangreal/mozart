@@ -32,7 +32,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
             repo: 'mozart',
         });
 
-        const build = this.getBuildAction(sourceArtifact);
+        const build = this.getBuildStage(sourceArtifact);
 
         const codePipeline = new cp.Pipeline(this, 'CodePipeline', {
             pipelineName: 'BlogPipeline',
@@ -53,12 +53,13 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         const cdkPipeline = new CdkPipeline(this, 'Pipeline', {
             codePipeline,
             cloudAssemblyArtifact: build.outCloudAssemblyArtifact,
-            selfMutating: true});
+            selfMutating: false // This creates the self mutating UpdatePipeline stage
+        });
 
         return cdkPipeline;
     }
 
-    private getBuildAction(inSourceArtifact: Artifact) :{
+    private getBuildStage(inSourceArtifact: Artifact) :{
         buildAction: cp.Action;
         outCloudAssemblyArtifact: Artifact;
     } {

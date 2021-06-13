@@ -56,7 +56,7 @@
             "cwd": "apps/infra",
             "commands": [
               {
-                "command": "cdk deploy"
+                "command": "cdk deploy --require-approval never"
               }
             ]
           }
