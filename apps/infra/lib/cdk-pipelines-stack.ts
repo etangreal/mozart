@@ -44,7 +44,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         const cdkPipeline = new CdkPipeline(this, 'Pipeline', {
             codePipeline,
             cloudAssemblyArtifact: buildActionParameters.outCloudAssemblyArtifact,
-            selfMutating: false // This creates the self mutating UpdatePipeline stage
+            selfMutating: true // This creates the self mutating UpdatePipeline stage
         });
 
         const preProdStage = new StaticSiteInfrastructureStage(this, 'PreProduction', {
