@@ -109,3 +109,6 @@
         # CDK Concepts
         - https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html
     
+    NextJs:
+
+        - https://nextjs.org/docs/advanced-features/custom-app
