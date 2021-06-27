@@ -1,22 +1,22 @@
 import React from "react";
 import Head from "next/head";
 
-// import styled from "styled-components";
+import { Container, Main, BlogTitle } from "./index.styles";
 
 const title = "Next.js + TypeScript";
 
 export function Index() {
   return (
-    <div className="container">
+    <Container>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1 className="title">{title}</h1>
-      </main>
-    </div>
+      <Main>
+        <BlogTitle className="title">{title}</BlogTitle>
+      </Main>
+    </Container>
   );
 }
 
