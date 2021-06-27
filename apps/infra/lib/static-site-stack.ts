@@ -61,11 +61,11 @@ export class StaticSiteStack extends cdk.Stack {
     //     target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
     //     zone
     // });
-    const cName = new route53.CnameRecord(this, 'SiteCnameRecord', {
-      zone: zone,
-      recordName: 'blog',
-      domainName: siteDomain
-    });
+    // const cName = new route53.CnameRecord(this, 'SiteCnameRecord', {
+    //   zone: zone,
+    //   recordName: 'blog',
+    //   domainName: siteDomain
+    // });
   }
 }
 
