@@ -2,6 +2,9 @@ import * as cdk from '@aws-cdk/core';
 import s3 = require('@aws-cdk/aws-s3');
 import route53 = require('@aws-cdk/aws-route53');
 import targets = require('@aws-cdk/aws-route53-targets');
+import acm = require('@aws-cdk/aws-certificatemanager');
+import cloudfront = require('@aws-cdk/aws-cloudfront');
+
 
 export class StaticSiteStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -18,7 +21,8 @@ export class StaticSiteStack extends cdk.Stack {
     const siteBucket = new s3.Bucket(this, 'SiteBucket', {
       bucketName: siteDomain,
       websiteIndexDocument: 'index.html',
-      websiteErrorDocument: 'error.html',
+      websiteErrorDocument: '404.html',
+
       publicReadAccess: true,
 
       // The default removal policy is RETAIN, which means that cdk destroy will not attempt to delete
@@ -29,44 +33,44 @@ export class StaticSiteStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'Bucket', { value: siteBucket.bucketName });
 
     // TLS certificate
-    // const certificateArn = new acm.DnsValidatedCertificate(this, 'SiteCertificate', {
-    //     domainName: siteDomain,
-    //     hostedZone: zone,
-    //     region: 'us-east-1', // Cloudfront only checks this region for certificates.
-    // }).certificateArn;
+    const certificateArn = new acm.DnsValidatedCertificate(this, 'SiteCertificate', {
+        domainName: siteDomain,
+        hostedZone: zone,
+        region: 'us-east-1', // Cloudfront only checks this region for certificates.
+    }).certificateArn;
     // new cdk.CfnOutput(this, 'Certificate', { value: certificateArn });
 
     // CloudFront distribution that provides HTTPS
-    // const distribution = new cloudfront.CloudFrontWebDistribution(this, 'SiteDistribution', {
-    //     aliasConfiguration: {
-    //         acmCertRef: certificateArn,
-    //         names: [ siteDomain ],
-    //         sslMethod: cloudfront.SSLMethod.SNI,
-    //         securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016,
-    //     },
-    //     originConfigs: [
-    //         {
-    //             customOriginSource: {
-    //                 domainName: siteBucket.bucketWebsiteDomainName,
-    //                 originProtocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
-    //             },
-    //             behaviors : [ {isDefaultBehavior: true}],
-    //         }
-    //     ]
-    // });
+    const distribution = new cloudfront.CloudFrontWebDistribution(this, 'SiteDistribution', {
+        aliasConfiguration: {
+            acmCertRef: certificateArn,
+            names: [ siteDomain ],
+            sslMethod: cloudfront.SSLMethod.SNI,
+            securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016,
+        },
+        originConfigs: [
+            {
+                customOriginSource: {
+                    domainName: siteBucket.bucketWebsiteDomainName,
+                    originProtocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
+                },
+                behaviors : [ {isDefaultBehavior: true}],
+            }
+        ]
+    });
     // new cdk.CfnOutput(this, 'DistributionId', { value: distribution.distributionId });
 
     // Route53 alias record for the CloudFront distribution
-    // new route53.ARecord(this, 'SiteAliasRecord', {
-    //     recordName: siteDomain,
-    //     target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
-    //     zone
-    // });
-    const aRecord = new route53.ARecord(this, 'AliasRecord', {
-      zone: zone,
-      recordName: 'blog',
-      target: route53.RecordTarget.fromAlias(new targets.BucketWebsiteTarget(siteBucket))
+    new route53.ARecord(this, 'SiteAliasRecord', {
+        recordName: siteDomain,
+        target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
+        zone
     });
+    // const aRecord = new route53.ARecord(this, 'AliasRecord', {
+    //   zone: zone,
+    //   recordName: 'blog',
+    //   target: route53.RecordTarget.fromAlias(new targets.BucketWebsiteTarget(siteBucket))
+    // });
   }
 }
 
