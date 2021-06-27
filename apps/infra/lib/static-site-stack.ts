@@ -41,31 +41,31 @@ export class StaticSiteStack extends cdk.Stack {
     // new cdk.CfnOutput(this, 'Certificate', { value: certificateArn });
 
     // CloudFront distribution that provides HTTPS
-    // const distribution = new cloudfront.CloudFrontWebDistribution(this, 'SiteDistribution', {
-    //     aliasConfiguration: {
-    //         acmCertRef: certificateArn,
-    //         names: [ siteDomain ],
-    //         sslMethod: cloudfront.SSLMethod.SNI,
-    //         securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016,
-    //     },
-    //     originConfigs: [
-    //         {
-    //             customOriginSource: {
-    //                 domainName: siteBucket.bucketWebsiteDomainName,
-    //                 originProtocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
-    //             },
-    //             behaviors : [ {isDefaultBehavior: true}],
-    //         }
-    //     ]
-    // });
+    const distribution = new cloudfront.CloudFrontWebDistribution(this, 'SiteDistribution', {
+        aliasConfiguration: {
+            acmCertRef: certificateArn,
+            names: [ siteDomain ],
+            sslMethod: cloudfront.SSLMethod.SNI,
+            securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016,
+        },
+        originConfigs: [
+            {
+                customOriginSource: {
+                    domainName: siteBucket.bucketWebsiteDomainName,
+                    originProtocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
+                },
+                behaviors : [ {isDefaultBehavior: true}],
+            }
+        ]
+    });
     // new cdk.CfnOutput(this, 'DistributionId', { value: distribution.distributionId });
 
     // Route53 alias record for the CloudFront distribution
-    // new route53.ARecord(this, 'SiteAliasRecord', {
-    //     recordName: siteDomain,
-    //     target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
-    //     zone
-    // });
+    new route53.ARecord(this, 'SiteAliasRecord', {
+        recordName: siteDomain,
+        target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
+        zone
+    });
     // const aRecord = new route53.ARecord(this, 'AliasRecord', {
     //   zone: zone,
     //   recordName: 'blog',
