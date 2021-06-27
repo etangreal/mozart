@@ -1,6 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import s3 = require('@aws-cdk/aws-s3');
 import route53 = require('@aws-cdk/aws-route53');
+import targets = require('@aws-cdk/aws-route53-targets');
 
 export class StaticSiteStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -61,11 +62,11 @@ export class StaticSiteStack extends cdk.Stack {
     //     target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
     //     zone
     // });
-    // const cName = new route53.CnameRecord(this, 'SiteCnameRecord', {
-    //   zone: zone,
-    //   recordName: 'blog',
-    //   domainName: siteDomain
-    // });
+    const aRecord = new route53.ARecord(this, 'AliasRecord', {
+      zone: zone,
+      recordName: 'blog',
+      target: route53.RecordTarget.fromAlias(new targets.BucketWebsiteTarget(siteBucket))
+    });
   }
 }
 
